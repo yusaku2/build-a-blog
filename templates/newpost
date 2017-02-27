@@ -1,9 +1,0 @@
-{% extends "front.html" %}
-
-{% block content %}
-<p>
-    <div class="blog">
-    <div class="blog-title">{{bloge.title}}</div>
-    <pre class="blog-body">{{blogpost.bloge}}</pre>
-</p>
-{% endblock %}

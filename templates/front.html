@@ -60,24 +60,15 @@
         <body style="margin: 0">
 
     <h1>/blog builder/</h1>
-    <form method="post">
-        <label>
-            <div>title</div>
-            <input type="text" name="title" value="{{title}}">
-        </label>
-
-        <label>
-            <div>New Post</div>
-            <textarea name="bloge">{{bloge}}</textarea>
-        </label>
-        <div class="error">{{error}}</div>
-        <input type="submit">
-    </form>
-    <hr>
     {% for blogpost in posts %}
         <div class="blog">
-            <div class="blog-title">{{bloge.title}}</div>
+
+
+            <div class="bloge"><a href="/blog/{{blogpost}}"{{bloge.title}}
             <pre class="blog-body">{{blogpost.bloge}}</pre>
+        </div>
+
     {% endfor %}
+    <hr>
     </body>
 </html>

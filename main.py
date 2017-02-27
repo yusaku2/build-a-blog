@@ -37,24 +37,28 @@ class Handler(webapp2.RequestHandler):
         self.write(self.render_str(template, **kw))
 
 class NewPost(Handler):
+
     title=self.request.get("title")
     bloge=self.request.get("bloge")
     def post(self):
+
         if title and bloge:
             b=Bloge(title=title, bloge=bloge)
             b.put()
-            self.redirect('/')
-
+            time.sleep(0.25)
+            blog_id=str(blogpost.key().id())
+            self.redirect('/blog'+blog_id)
         else:
             error="Please enter a title and post!"
             self.render_front(title, bloge, error)
 
     def get(self):
+        self.render("newpost.html")
 class ViewPostHandler(Handler):
     def get(self, id):
 
-        self.response.write(bloge.id)
-
+        posts=blogpost.get_by_id(int(id))
+        self.render("front.html", bloge)
 class Bloge(db.Model):
     title=db.StringProperty(required=True)
     bloge=db.TextProperty(required=True)
@@ -64,22 +68,13 @@ class MainPage(Handler):
     def render_front(self, title="", bloge="", error=""):
         posts=db.GqlQuery("SELECT * FROM Bloge ORDER BY  created DESC LIMIT 5")
         self.render("front.html",title=title, bloge=bloge, error=error)
-        
+
     def get(self):
         self.render_front()
 
     def post(self):
         title=self.request.get("title")
         bloge=self.request.get("bloge")
-
-        if title and bloge:
-            b=Bloge(title=title, bloge=bloge)
-            b.put()
-            self.redirect('/')
-
-        else:
-            error="Please enter a title and post!"
-            self.render_front(title, bloge, error)
 
 
 
