@@ -17,13 +17,14 @@
 import os
 import webapp2
 import jinja2
-
+import time
+from google.appengine.ext import db
 template_dir=os.path.join(os.path.dirname(__file__),'templates')
-webapp2.Route('/blog/<id:\d+>', ViewPostHandler)
 
 jinja_env=jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
           autoescape=True)
-from google.appengine.ext import db
+
+
 
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -36,51 +37,51 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
-class NewPost(Handler):
-
-    title=self.request.get("title")
-    bloge=self.request.get("bloge")
-    def post(self):
-
-        if title and bloge:
-            b=Bloge(title=title, bloge=bloge)
-            b.put()
-            time.sleep(0.25)
-            blog_id=str(blogpost.key().id())
-            self.redirect('/blog'+blog_id)
-        else:
-            error="Please enter a title and post!"
-            self.render_front(title, bloge, error)
-
-    def get(self):
-        self.render("newpost.html")
-class ViewPostHandler(Handler):
-    def get(self, id):
-
-        posts=blogpost.get_by_id(int(id))
-        self.render("front.html", bloge)
-class Bloge(db.Model):
-    title=db.StringProperty(required=True)
-    bloge=db.TextProperty(required=True)
-    created=db.DateTimeProperty(auto_now_add=True)
-
 class MainPage(Handler):
-    def render_front(self, title="", bloge="", error=""):
-        posts=db.GqlQuery("SELECT * FROM Bloge ORDER BY  created DESC LIMIT 5")
-        self.render("front.html",title=title, bloge=bloge, error=error)
+    def render_front(self, title="", bloge=""):
+        posts=db.GqlQuery("SELECT * FROM Bloge ORDER BY created DESC LIMIT 5")
+        self.render("front.html",title=title, bloge=bloge,  posts=posts)
 
     def get(self):
         self.render_front()
+
+
+class NewPost(Handler):
+
+    def get(self):
+        self.render("newpost.html")
 
     def post(self):
         title=self.request.get("title")
         bloge=self.request.get("bloge")
 
+        if title and bloge:
+            blogpost=Bloge(title=title, bloge=bloge)
+            blogpost.put()
+            time.sleep(0.25)
+
+            self.redirect('/blog'+str(blogpost.key().id()))
+        else:
+            error="Please enter a title and post!"
+            self.render_front(title, bloge, error)
+
+class ViewPostHandler(Handler):
+    def get(self, id):
+        posts=Bloge.get_by_id(int(id))
+        self.render("front.html", posts=posts)
+
+class Bloge(db.Model):
+    title=db.StringProperty(required=True)
+    bloge=db.TextProperty(required=True)
+    created=db.DateTimeProperty(auto_now_add=True)
+
+
+
 
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
-     ('/blog', BlogView)
-     ('/newpost', newpost)
-
+    ('/blog', MainPage),
+    ('/newpost', NewPost),
+    webapp2.Route('/blog/<id:\d+>', ViewPostHandler)
 ], debug=True)

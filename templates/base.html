@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Blogs!</title>
+</head>
+
 <style type="text/css">
         body {
             font-family: sans-serif;
@@ -49,14 +55,15 @@
             margin: 0;
             font-size: 17px;
         }
+
     </style>
 
-    <title style="margin: 0">
 
-        <a href=/newpost>New Post|</a>
-        <a href=/>Home</a>
+    <body style="margin: 0">
 
-    </title>
-    <body>
-
+            <a href='/newpost'>New Post|</a>
+            <a href='/'>Home</a>
+        {% block content %}
+        {% endblock %}
     </body>
+</html>
