@@ -25,6 +25,10 @@ jinja_env=jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
           autoescape=True)
 
 
+class Bloge(db.Model):
+    title=db.StringProperty(required=True)
+    bloge=db.TextProperty(required=True)
+    created=db.DateTimeProperty(auto_now_add=True)
 
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
@@ -45,6 +49,9 @@ class MainPage(Handler):
     def get(self):
         self.render_front()
 
+    def post(self):
+        self.redirect('/blog'+str(blogpost.key().id()))
+
 
 class NewPost(Handler):
 
@@ -60,28 +67,30 @@ class NewPost(Handler):
             blogpost.put()
             time.sleep(0.25)
 
-            self.redirect('/blog'+str(blogpost.key().id()))
+            self.redirect('/blog/'+str(blogpost.key().id()))
         else:
             error="Please enter a title and post!"
-            self.render_front(title, bloge, error)
+
+            self.render("NewPost.html", title=title, bloge=bloge, error=error)
+"""
+class Solo(Handler):
+    def get(self):
+        self.render("solo.html")
+    def post(self):
+        title=self.request.get("title")
+        bloge=self.request.get("bloge")
+        self.render("solo.html", title=title, bloge=bloge)
+    """
 
 class ViewPostHandler(Handler):
     def get(self, id):
         posts=Bloge.get_by_id(int(id))
-        self.render("front.html", posts=posts)
-
-class Bloge(db.Model):
-    title=db.StringProperty(required=True)
-    bloge=db.TextProperty(required=True)
-    created=db.DateTimeProperty(auto_now_add=True)
-
-
-
+        self.render("solo.html", posts=posts)
 
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/blog', MainPage),
+    #('/blog', Solo),
     ('/newpost', NewPost),
     webapp2.Route('/blog/<id:\d+>', ViewPostHandler)
 ], debug=True)

@@ -5,13 +5,17 @@
 
     {% for blogpost in posts %}
 
+            <label>
             <div class="bloge">
-            <a href="/blog/{{posts.key().id()}}" class="post-title">{{posts.title}}
+
+            <a href="/blog/{{blogpost.key().id()}}" class="post-title">{{blogpost.title}}
             </a>
+            </label>
 
-            <pre class="blog-body">{{posts.bloge}}
+            <label>
+            <pre class="blog-body">{{blogpost.bloge}}
             </pre>
-
+        </label>
             </div>
 
     {% endfor %}

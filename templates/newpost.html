@@ -2,19 +2,23 @@
 
 {% block content %}
 <form method="post">
-    <label>
-        <div><title>Home</title></div>
-        <input type="text" name="title" value="{{title}}">
-    </label>
-
-    <label>
+    <head>
+        <title>New Post</title>
+    </head>
+    <body>
+        <h1>New Post</h1>
         <div class="error">{{error}}</div>
 
-        <div>New Post</div>
+        <form method="post">
+            <label>
+                <div> Title</div>
+                <input type="text" name="title">
+            </label>
 
-        <textarea name="bloge">{{bloge}}</textarea>
-    </label>
-    <input type="submit">
-</form>
+            <div> Post</div>
+            <textarea name="bloge">{{bloge}}</textarea>
+            <input type="submit">
+        </form>
+
 
 {% endblock %}
